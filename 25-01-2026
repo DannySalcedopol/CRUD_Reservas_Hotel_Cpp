@@ -1,0 +1,37 @@
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    ui->tablaReservas->horizontalHeader()
+        ->setSectionResizeMode(QHeaderView::Stretch);
+}
+
+
+double MainWindow::calcularTotal(QString habitacion, int noches)
+{
+    if (habitacion == "Simple") return 40 * noches;
+    if (habitacion == "Doble") return 70 * noches;
+    if (habitacion == "Suite") return 120 * noches;
+    return 0;
+}
+
+void MainWindow::actualizarTotal()
+{
+    double total = calcularTotal(
+        ui->comboHabitacion->currentText(),
+        ui->spinNoches->value()
+    );
+    ui->txtTotal->setText(QString::number(total, 'f', 2));
+}
+
+void MainWindow::on_comboHabitacion_currentIndexChanged(int)
+{
+    actualizarTotal();
+}
+
+void MainWindow::on_spinNoches_valueChanged(int)
+{
+    actualizarTotal();
+}
