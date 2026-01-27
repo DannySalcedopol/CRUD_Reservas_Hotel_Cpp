@@ -1,1 +1,50 @@
 
+/* ===== ELIMINAR  ===== */
+
+void MainWindow::on_botonEliminar_clicked()
+{
+    int fila = ui->tablaReservas->currentRow();
+
+    if (fila < 0)
+    {
+        QMessageBox::warning(this, "Atención", "Seleccione una reserva.");
+        return;
+    }
+
+    if (QMessageBox::question(this, "Confirmar",
+        "¿Desea eliminar la reserva?",
+        QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+    {
+        ui->tablaReservas->removeRow(fila);
+
+        QFile archivo("reservas.txt");
+        archivo.open(QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream out(&archivo);
+
+        for (int i = 0; i < ui->tablaReservas->rowCount(); i++)
+        {
+            out << ui->tablaReservas->item(i,0)->text() << ";"
+                << ui->tablaReservas->item(i,1)->text() << ";"
+                << ui->tablaReservas->item(i,2)->text() << ";"
+                << ui->tablaReservas->item(i,3)->text() << ";"
+                << ui->tablaReservas->item(i,4)->text() << "\n";
+        }
+        archivo.close();
+
+        on_botonLimpiar_clicked();
+        QMessageBox::information(this, "Correcto", "Reserva eliminada.");
+    }
+}
+
+/* ===== LIMPIAR ===== */
+
+void MainWindow::on_botonLimpiar_clicked()
+{
+    ui->txtNombre->clear();
+    ui->txtCedula->clear();
+    ui->comboHabitacion->setCurrentIndex(0);
+    ui->spinNoches->setValue(1);
+    ui->txtTotal->clear();
+    ui->tablaReservas->clearSelection();
+    actualizarTotal();
+}
